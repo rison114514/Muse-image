@@ -1,0 +1,22 @@
+# API 配置（含真实 Key，不提交）
+config.env
+*.env
+!.env.example
+
+# 生成的图片
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# 编辑器
+.DS_Store
+.idea/
+*.swp
