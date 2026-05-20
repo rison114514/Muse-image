@@ -10,7 +10,7 @@ import sys
 CONFIG_FILE = "config.env"
 USER_CONFIG_DIR = os.path.expanduser("~/.config/gpt-image-gen")
 LOCAL_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_BASE_URL = "https://dragoncode.codes/gpt-image/v1"
+DEFAULT_BASE_URL = "https://your-provider.example.com/gpt-image/v1"
 
 
 def _read_env_file(path):

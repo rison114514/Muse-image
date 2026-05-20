@@ -9,7 +9,7 @@ gpt-image-gen — CardFight Tactics 美术素材生成器
 """
 import os, sys, time, argparse, datetime, requests
 
-_DEFAULT_BASE_URL = "https://dragoncode.codes/gpt-image/v1"
+_DEFAULT_BASE_URL = "https://your-provider.example.com/gpt-image/v1"
 API_KEY  = None   # loaded by load_config() at startup
 BASE_URL = _DEFAULT_BASE_URL
 
@@ -646,19 +646,94 @@ def generate_one(prompt, style_id=None, out_path=None, size="1:1", resolution="1
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 def print_help():
-    print("gpt-image-gen — 50种艺术风格图片生成器\n")
-    print(f"{'ID':<4} {'风格名':<10} {'英文关键词':<22} 简述")
-    print("-" * 65)
-    for sid, s in STYLES.items():
-        print(f"{sid:<4} {s['name']:<10} {s['en']:<22} {s['desc']}")
+    # 4 大类高亮风格 + 通俗"适合做什么"标签
+    CATEGORIES = [
+        ("📷 写实 / 电影感  —— 像真照片、有镜头感,适合主视觉、产品图、宣发", [
+            ("10", "做产品照、人物照,需要真实质感"),
+            ("11", "海报、宣发图,要有大片氛围"),
+            ("47", "黑白冷峻,适合悬疑、文艺"),
+            ("48", "人像剪影叠风景,文艺概念图"),
+        ]),
+        ("🎨 插画 / 动漫 / 手绘  —— 线条+色彩,亲和好看,适合社交配图、故事化场景", [
+            ("03", "二次元角色,头像、社交配图"),
+            ("04", "温柔治愈,生活类、母婴、文创"),
+            ("25", "吉卜力童话感,故事、奇幻、童年"),
+            ("39", "美漫力量感,IP 形象、英雄题材"),
+        ]),
+        ("🕹 数字 / 复古 / 赛博  —— 像素、霓虹、未来感,适合游戏、科技、潮流", [
+            ("01", "复古游戏画风,游戏 ICON、Q 版角色"),
+            ("19", "赛博朋克霓虹夜城,科技、未来"),
+            ("17", "80年代合成波,潮流海报、致敬复古"),
+            ("34", "干净 3D 渲染,产品 mockup、电商图"),
+        ]),
+        ("🖼 传统 / 抽象 / 工艺  —— 油画、水墨、版画,适合人文、艺术、品质叙事", [
+            ("05", "古典油画,人物、肖像、艺术氛围"),
+            ("44", "中国水墨,东方意境、留白诗意"),
+            ("27", "印象派光影,氛围、自然、咖啡馆感"),
+            ("21", "极简线条,编辑设计、品牌、性冷淡"),
+        ]),
+    ]
+    highlighted = {sid for _, items in CATEGORIES for sid, _ in items}
+
+    print("gpt-image-gen — 对话式 AI 出图工具")
+    print("=" * 70)
     print()
-    print("用法:")
-    print("  --help                     列出全部50种风格")
-    print("  --batch                    批量生成全部预设素材")
-    print("  --style <01-50> --prompt <描述>   指定风格自由生成")
-    print("  --out <path>               自定义保存路径 (PNG)")
-    print("  --size <ratio>             比例: 1:1 / 16:9 / 2:3 / 3:4 / 4:3 (默认 1:1)")
-    print("  --resolution <res>         分辨率: 1k / 2k / 4k (默认 1k)")
+    print('👋 第一次用?直接说"我想画一张 xxx"就行——我会用 8 道选择题')
+    print("   帮你把需求落成提示词,确认后再出图,不满意还能微调。")
+    print()
+    print("下面是 50 种画风。先看 4 大类的推荐风格(够 90% 场景用),")
+    print('找不到合适的再翻最下方的"全部 50 种"完整列表。')
+    print()
+
+    # 4 大类推荐
+    for title, items in CATEGORIES:
+        print(title)
+        for sid, tag in items:
+            s = STYLES[sid]
+            print(f"  [{sid}] {s['name']:<8}  适合: {tag}")
+        print()
+
+    # 其余风格,精简列出
+    print("─" * 70)
+    print("📚 其他 34 种风格(场景更专、用得较少,需要时按 ID 选):")
+    print()
+    cols = []
+    for sid, s in STYLES.items():
+        if sid in highlighted:
+            continue
+        cols.append(f"[{sid}] {s['name']}")
+    # 三列排版
+    for i in range(0, len(cols), 3):
+        row = cols[i:i+3]
+        print("  " + "".join(f"{c:<22}" for c in row))
+    print()
+
+    print("=" * 70)
+    print("🚀 怎么用")
+    print("=" * 70)
+    print()
+    print("【推荐】对话式出图(适合新手 / 想要好结果)")
+    print("  直接告诉我你要画什么,我会问 8 个问题(用途、人群、内容、")
+    print("  风格、比例…),全程不用记命令。例如:")
+    print("    > 我想画一张公众号文章的封面,主题是程序员的猫")
+    print()
+    print("【快速】一行命令直接出图(适合知道自己要什么)")
+    print("  /gpt-image-gen --style 19 一只猫在霓虹小巷")
+    print("    └─ --style 后面填上面表里的两位 ID")
+    print()
+    print("【进阶】组合 + 微调")
+    print("  • 风格混搭:   --style 25+18   (吉卜力 × 蒸汽朋克)")
+    print('  • 加抑制词:   --negative "卡通,儿童画"   (告诉 AI 不要什么)')
+    print("  • 改比例:     --size 16:9   (常用: 1:1 / 16:9 / 9:16 / 2:3 / 3:2 / 3:4 / 4:3,也可自定义 W:H)")
+    print("  • 改清晰度:   --resolution 2k   (默认 1k,要大图就 2k/4k)")
+    print()
+    print("【其他指令】")
+    print("  /gpt-image-gen show     —— 看当前出图进度和历史版本")
+    print("  /gpt-image-gen refine   —— 对刚才那张图做微调")
+    print("  /gpt-image-gen accept   —— 把当前版本定稿、归档")
+    print("  /gpt-image-gen list     —— 列出所有历史 session")
+    print()
+    print('💡 不知道选什么风格?直接说"帮我画 xxx",剩下交给我。')
 
 
 def batch_main():
@@ -692,12 +767,27 @@ def batch_main():
     print(f"\n完成: {success} 成功，{failed} 失败")
 
 
+def _read_prompt_file(path):
+    """读取 .prompt.md：剥掉 --- YAML 头，正文（含 Avoid 段）作为最终 prompt。"""
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+    if content.startswith("---\n"):
+        end = content.find("\n---\n", 4)
+        if end != -1:
+            content = content[end + 5:]
+    return content.strip()
+
+
 def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--help", "-h", action="store_true")
     parser.add_argument("--batch", action="store_true")
     parser.add_argument("--style", default=None)
     parser.add_argument("--prompt", default=None)
+    parser.add_argument("--prompt-file", default=None,
+                        help="从 .prompt.md 文件读 prompt（剥 YAML 头），与 --prompt 互斥")
+    parser.add_argument("--negative", default=None,
+                        help="追加抑制词，会拼成 ' Avoid: <text>.' 接到 prompt 末尾")
     parser.add_argument("--out", default=None)
     parser.add_argument("--size", default="1:1")
     parser.add_argument("--resolution", default="1k")
@@ -705,7 +795,7 @@ def main():
     parser.add_argument("--base-url", default=None, help="API Base URL（优先于配置文件和环境变量）")
     args = parser.parse_args()
 
-    if args.help or (not args.batch and not args.prompt):
+    if args.help or (not args.batch and not args.prompt and not args.prompt_file):
         print_help()
         return
 
@@ -719,7 +809,15 @@ def main():
         print(f"错误: 风格ID '{args.style}' 不存在，有效范围 01–50。用 --help 查看列表。")
         sys.exit(1)
 
-    generate_one(args.prompt, args.style, args.out, args.size, args.resolution)
+    prompt = args.prompt
+    if args.prompt_file:
+        prompt = _read_prompt_file(args.prompt_file)
+    if args.negative:
+        prompt = (prompt or "") + f"\n\nAvoid: {args.negative.strip()}."
+
+    # --prompt-file 已包含完整 prompt（含风格 prefix）；不再叠加 --style 的 prefix
+    style_for_gen = None if args.prompt_file else args.style
+    generate_one(prompt, style_for_gen, args.out, args.size, args.resolution)
 
 
 if __name__ == "__main__":
