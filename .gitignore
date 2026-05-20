@@ -25,7 +25,7 @@ venv/
 .claude/
 
 # 交互式 brief / prompt / 生成产物
-.gpt-image-gen/
+.muse-image/
 prompts/
 outputs/
 !风格1.png

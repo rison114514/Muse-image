@@ -214,7 +214,7 @@ def synthesize(brief: dict, *, version: int, session_id: str):
 
     full = body + "\n\n" + avoid
 
-    # YAML 头精简成最少必要字段(可读优先)。完整 brief 存在 .gpt-image-gen/sessions/<sid>.json
+    # YAML 头精简成最少必要字段(可读优先)。完整 brief 存在 .muse-image/sessions/<sid>.json
     yaml_head = (
         "---\n"
         f"session_id: {session_id}\n"
@@ -223,7 +223,7 @@ def synthesize(brief: dict, *, version: int, session_id: str):
         f"style_id: {style_id or 'none'}\n"
         f"aspect_ratio: {brief.get('aspect_ratio') or '1:1'}\n"
         "ai_dynamic_suppression: \"<TO BE FILLED BY CLAUDE: 2-4 针对性抑制短语>\"\n"
-        "# 完整 brief 见: .gpt-image-gen/sessions/" + session_id + ".json\n"
+        "# 完整 brief 见: .muse-image/sessions/" + session_id + ".json\n"
         "# 这是给最终 API 的提示词,可直接编辑下方正文(YAML 头之外的部分)\n"
         "---\n\n"
     )
@@ -232,7 +232,7 @@ def synthesize(brief: dict, *, version: int, session_id: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--session-file", required=True, help="path to .gpt-image-gen/sessions/<id>.json")
+    ap.add_argument("--session-file", required=True, help="path to .muse-image/sessions/<id>.json")
     ap.add_argument("--version", type=int, required=True)
     ap.add_argument("--out", required=True, help="output .prompt.md path")
     args = ap.parse_args()

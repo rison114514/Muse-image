@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-gpt-image-gen session 管理（轻量单文件状态）。
+muse-image session 管理（轻量单文件状态）。
 
 会话状态写在 .gpt-image-gen/sessions/<id>.json。
 没有 journal、没有 snapshot、没有 lease——agent 崩了最多丢"当前未提交那一答"。
@@ -21,7 +21,7 @@ phase 状态机:
 import argparse, json, os, sys, datetime, glob
 
 ROOT = os.environ.get("GPT_IMAGE_GEN_ROOT") or os.getcwd()
-SESS_DIR = os.path.join(ROOT, ".gpt-image-gen", "sessions")
+SESS_DIR = os.path.join(ROOT, ".muse-image", "sessions")
 
 # 8 轴 brief schema（顺序 = 默认询问顺序）
 BRIEF_FIELDS = [

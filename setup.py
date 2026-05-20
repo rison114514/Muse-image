@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-gpt-image-gen 配置向导
+muse-image 配置向导
 用法: python3 setup.py
 """
 import os
@@ -8,7 +8,7 @@ import sys
 
 
 CONFIG_FILE = "config.env"
-USER_CONFIG_DIR = os.path.expanduser("~/.config/gpt-image-gen")
+USER_CONFIG_DIR = os.path.expanduser("~/.config/muse-image")
 LOCAL_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_BASE_URL = "https://your-provider.example.com/gpt-image/v1"
 
@@ -51,7 +51,7 @@ def _prompt(message, default="", secret=False):
 
 def main():
     print("=" * 50)
-    print("  gpt-image-gen 配置向导")
+    print("  muse-image 配置向导")
     print("=" * 50)
     print()
 

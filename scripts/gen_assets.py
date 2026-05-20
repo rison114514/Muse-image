@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-gpt-image-gen — CardFight Tactics 美术素材生成器
+muse-image — AI 图像生成器
 用法:
   python3 scripts/gen_assets.py --help
   python3 scripts/gen_assets.py --batch                          # 生成全部预设素材
@@ -79,7 +79,7 @@ def load_config(api_key_arg=None, base_url_arg=None):
       2. Env vars  (GPT_IMAGE_API_KEY / GPT_IMAGE_BASE_URL)
       3. Config files:
            a. <repo_root>/config.env          (project-local)
-           b. ~/.config/gpt-image-gen/config.env  (user-global)
+           b. ~/.config/muse-image/config.env  (user-global)
     Run `python3 setup.py` to create a config file interactively.
     """
     global API_KEY, BASE_URL, AUTH_HDR, JSON_HDR
@@ -91,7 +91,7 @@ def load_config(api_key_arg=None, base_url_arg=None):
     script_dir   = os.path.dirname(os.path.abspath(__file__))
     config_paths = [
         os.path.join(script_dir, "..", "config.env"),
-        os.path.expanduser("~/.config/gpt-image-gen/config.env"),
+        os.path.expanduser("~/.config/muse-image/config.env"),
     ]
     for p in config_paths:
         cfg = _read_env_file(p)
@@ -675,7 +675,7 @@ def print_help():
     ]
     highlighted = {sid for _, items in CATEGORIES for sid, _ in items}
 
-    print("gpt-image-gen — 对话式 AI 出图工具")
+    print("muse-image — 对话式 AI 出图工具")
     print("=" * 70)
     print()
     print('👋 第一次用?直接说"我想画一张 xxx"就行——我会用 8 道选择题')
@@ -718,7 +718,7 @@ def print_help():
     print("    > 我想画一张公众号文章的封面,主题是程序员的猫")
     print()
     print("【快速】一行命令直接出图(适合知道自己要什么)")
-    print("  /gpt-image-gen --style 19 一只猫在霓虹小巷")
+    print("  /muse-image --style 19 一只猫在霓虹小巷")
     print("    └─ --style 后面填上面表里的两位 ID")
     print()
     print("【进阶】组合 + 微调")
@@ -728,10 +728,10 @@ def print_help():
     print("  • 改清晰度:   --resolution 2k   (默认 1k,要大图就 2k/4k)")
     print()
     print("【其他指令】")
-    print("  /gpt-image-gen show     —— 看当前出图进度和历史版本")
-    print("  /gpt-image-gen refine   —— 对刚才那张图做微调")
-    print("  /gpt-image-gen accept   —— 把当前版本定稿、归档")
-    print("  /gpt-image-gen list     —— 列出所有历史 session")
+    print("  /muse-image show     —— 看当前出图进度和历史版本")
+    print("  /muse-image refine   —— 对刚才那张图做微调")
+    print("  /muse-image accept   —— 把当前版本定稿、归档")
+    print("  /muse-image list     —— 列出所有历史 session")
     print()
     print('💡 不知道选什么风格?直接说"帮我画 xxx",剩下交给我。')
 
